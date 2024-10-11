@@ -11,7 +11,8 @@ var productosSchema = new Schema({
     precio:Number,
     descripcion:String,
     imagen:String,
-    estado:String //aca listamos por activo o inactivo
+    estado:String, //aca listamos por activo o inactivo
+    cantidad:Number
 })
 
 const Mymodel = mongoose.model("productos" ,productosSchema)
@@ -30,6 +31,7 @@ productosModel.guardar = function(post, callback){
     instancia.precio = parseInt (post.precio) //parse in convierte a entero
     instancia.descripcion = post.descripcion
     instancia.estado = post.estado
+    instancia.cantidad = post.cantidad
    /*  Acontinuacion le estamos diciendo que si el formato imagen se guarda en blanco se le va otorgar una 
     imagen por defecto */
     if(post.imagen == undefined || post.imagen == null || post.imagen == ""){
@@ -72,8 +74,6 @@ productosModel.listar = function(post, callback){
     //return callback({state:true, datos:bdproductos}) -> estamos trayendo los datos almacenados en el array
 }
 
-// listar productos activos
-
 productosModel.listarproductosactivos = function(post, callback){
     //integracion de listar con mongo 
     // 1 es valor de activo 
@@ -88,9 +88,6 @@ productosModel.listarproductosactivos = function(post, callback){
      //return callback({state:true, datos:bdproductos}) -> estamos trayendo los datos almacenados en el array
 }
  
-
-//      Listar por Id
-
 productosModel.listarId = function(post, callback){
     //integracion de listar con mongo 
     //con password 0 estamos ocultando la contraseña de el listar
@@ -137,7 +134,8 @@ productosModel.actualizar = function (post, callback){
             precio:post.precio,
             descripcion:post.descripcion,
             imagen:post.imagen,
-            estado:post.estado
+            estado:post.estado,
+            cantidad:post.cantidad
 
         }).then((respuesta) => {
             return callback ({state:true, mensaje:"Elemento actualizado"})

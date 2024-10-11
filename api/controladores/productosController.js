@@ -11,7 +11,8 @@ productosController.guardar = function(request, response)
         precio: request.body.precio,
         descripcion: request.body.descripcion,
         imagen: request.body.imagen,
-        estado: request.body.estado
+        estado: request.body.estado,
+        cantidad: request.body.cantidad
 
           
         
@@ -54,7 +55,12 @@ productosController.guardar = function(request, response)
         return false
     }
 
-
+    if(post.cantidad == null || post.cantidad == undefined || post.cantidad == ""){
+        //Si las condiciones de arriba se cumplen el resultado es el de abajo
+        response.json ({state:false,mensaje:"el campo cantidad es obligatorio"})
+        //frena el procesp
+        return false
+    }
 
     
     //guardar en el modelo(modelos) se importa
@@ -130,7 +136,8 @@ productosController.actualizar = function (request, response){
         precio: request.body.precio,
         descripcion: request.body.descripcion,
         imagen: request.body.imagen,
-        estado: request.body.estado
+        estado: request.body.estado,
+        cantidad: request.body.cantidad
     }
 
     if(post.nombre == null || post.nombre == undefined || post.nombre == ""){
@@ -166,6 +173,13 @@ productosController.actualizar = function (request, response){
     if(post.estado == null || post.estado == undefined || post.estado == ""){
         //Si las condiciones de arriba se cumplen el resultado es el de abajo
         response.json ({state:false,mensaje:"el campo estado es obligatorio"})
+        //frena el procesp
+        return false
+    }
+
+    if(post.cantidad == null || post.cantidad == undefined || post.cantidad == ""){
+        //Si las condiciones de arriba se cumplen el resultado es el de abajo
+        response.json ({state:false,mensaje:"el campo cantidad es obligatorio"})
         //frena el procesp
         return false
     }
