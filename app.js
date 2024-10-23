@@ -12,6 +12,13 @@ const express = require("express")
 const session = require('express-session')
 //Cookies
 const cookieParser = require ('cookie-parser')
+
+// Captures and save within the var root 
+global.path = require ('path')
+//Root
+global.AppRoot = path.resolve(__dirname)
+
+
 //Exporting express to js archives
 global.app = express() 
 //Bodyparser
@@ -89,6 +96,11 @@ app.use(session({
 //App.js linked to rutas.js
 require ('./rutas.js')
 
+// Acessing the upload archived 
+app.use('/productos',express.static(__dirname + '/productos'))
+app.use('/Avatar',express.static(__dirname + '/Avatar'))
+
+//Exposure  the folder so that it can be visiblefor peticions from the FRONT to the BACK
 app.use('/',express.static(__dirname + '/web'))
 
 //Listening port 3000

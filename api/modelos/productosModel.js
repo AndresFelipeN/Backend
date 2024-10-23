@@ -35,6 +35,7 @@ productosModel.guardar = function(post, callback){
    /*  Acontinuacion le estamos diciendo que si el formato imagen se guarda en blanco se le va otorgar una 
     imagen por defecto */
     if(post.imagen == undefined || post.imagen == null || post.imagen == ""){
+        console.log(imagen)
         instancia.imagen = "assets/noimagen.jpg" //aca asignamos una por defecto
     }
     else{

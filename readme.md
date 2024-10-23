@@ -9,3 +9,4 @@ npm install express-session: for express session
 npm install nodemailer: for email verification
 npm i sha256: to encryp passwords
 nmp i nodemon -g: auttomatically actualices the server
+npm i multer: Dependece for archives
