@@ -23,7 +23,6 @@ function tiempoTranscurridoEnMinutos(fechaTexto){
     return diferenciaMinutos
 }
 
-
 usuariosController.guardar = function(request, response)
 {
     var post = 
@@ -31,7 +30,9 @@ usuariosController.guardar = function(request, response)
         email: request.body.email,
         password: request.body.password,
         estado: request.body.estado,
-        rol: request.body.rol
+        rol: request.body.rol,
+        telefono: request.body.telefono,
+        direccion: request.body.direccion,
         
         
         
@@ -75,13 +76,37 @@ usuariosController.guardar = function(request, response)
         return false
     }
 
-
     
     //rex.text nos permite confirmr si un email es valido
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if(regex.test(post.email) == false){
         response.json({state:false,mensaje: "el campo email no es valido"})
     }
+
+   /*  if(post.telefono == null || post.telefono == undefined || post.telefono == ""){
+        //Si las condiciones de arriba se cumplen el resultado es el de abajo
+        response.json ({state:false,mensaje:"el campo telefono es obligatorio"})
+        //frena el procesp
+        return false
+    } 
+
+
+    //isNaM una validacion para confirar si el input es numero o no
+    //isNan significa esto no es un numero, si el input es una letra daria true porque no e sun numero
+    
+   //que sea numero
+    if(isNaN(post.telefono) ==true){
+        response.json ({state:false,mensaje:"el campo telefono no es un numero"})
+        return false
+
+    }
+
+    if(post.direccion == null || post.direccion == undefined || post.direccion == ""){
+        
+        response.json ({state:false,mensaje:"el campo direccion es obligatorio"})
+        
+        return false
+    }  */
 
     if(post.password == null || post.password == undefined || post.password == ""){
         
@@ -94,9 +119,6 @@ usuariosController.guardar = function(request, response)
     // estamos adicional mente concatenando una parabra que se almacena en Config
 
     post.password = SHA256(post.password + config.palabraclave) 
-
-
-
 
     
     usuariosModel.existeemail(post, function(res){
@@ -113,17 +135,7 @@ usuariosController.guardar = function(request, response)
         }
     })
 
-
-    
-    
-    
-
-
-   
-
-
 }
-
 
 usuariosController.registro = function(request, response)
 {
@@ -291,7 +303,6 @@ usuariosController.registro = function(request, response)
 
 }
 
-
 usuariosController.listar = function(request, response){
     usuariosModel.listar(null, function(respuesta){
         response.json(respuesta)
@@ -324,7 +335,9 @@ usuariosController.actualizar = function (request, response){
         _id:request.body._id,
         nombre:request.body.nombre,
         rol:request.body.rol,
-        estado:request.body.estado
+        estado:request.body.estado,
+        telefono:request.body.telefono,
+        direccion:request.body.direccion
     }
 
     if(post.nombre == null || post.nombre == undefined || post.nombre == ""){
@@ -690,6 +703,77 @@ usuariosController.recuperarpass = function(request, response){
 
 }
 
+usuariosController.exportarexel = function( request,  response){
+    
+    usuariosModel.listar(null, function(respuesta){
+        
+      //Exportar exel
+        const dataToExport = respuesta.datos.map (doc => doc._doc);
+        //paquete json to Exel se instala en el  cmd  npm i json2xls
+        var xls = json2xls(dataToExport)
+        //Azar
+        var azar = '8135'
+        //libreria FS file system 
+        fs.writeFileSync('misusuarios' + azar +'.xls',xls, 'binary')
+        response.download('misusuarios'+ azar +'.xls', function(err){
+            if(err){
+              console.log(err)
+            }
+            else {
+                console.log('descarga completa')
+                //Abajo borra  para evitar re escribir
+                fs.unlinkSync('misusuarios'+ azar + '.xls')
+            }
+        })     
+    })
+}
+
+usuariosController.exportarpdf = function(request, response){
+    
+
+    const PDFDocument = require('pdfkit')
+    const doc = new PDFDocument();
+    var writeStream = fs.createWriteStream('informe.pdf')
+    doc.pipe(writeStream)
+
+    //Titulo
+    doc.fontSize(14).text("Lista Usuarios", 240,70)
+    
+    doc.fontSize(14).text("Nombre", 50,99)
+    doc.fontSize(14).text("Email", 220,99)
+
+    usuariosModel.listar = (null,function (respuesta){
+        for (let a = 0; a < respuesta.datos.length; a++) {
+            
+            
+            doc.fontSize(10).text(respuesta.datos[a].nombre, 50,110 + (a*11))
+            doc.fontSize(10).text(respuesta.datos[a].email, 220,110 + (a*11))
+
+            if (a == 20){
+                doc.addPage()
+            }
+            
+            if ( a == respuesta.datos.length - 1){
+                doc.end()
+            }   
+        }  
+    })
+
+    writeStream.on('finish',function(){
+        response.download('informe.pdf', function(err){
+            if(err){
+              console.log(err)
+            }
+            else {
+                console.log('descarga completa')
+                //Abajo borra  para evitar re escribir
+                fs.unlinkSync('informe.pdf')
+            }
+        }) 
+
+    })
+  
+}
 
 
 //Export

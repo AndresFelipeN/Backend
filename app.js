@@ -17,6 +17,10 @@ const cookieParser = require ('cookie-parser')
 global.path = require ('path')
 //Root
 global.AppRoot = path.resolve(__dirname)
+//paquete json to Exel se instala en el  cmd  npm i json2xls
+global.json2xls = require ('json2xls') 
+//libreria FS file system 
+global.fs = require ('fs') 
 
 
 //Exporting express to js archives
@@ -43,8 +47,6 @@ app.all('*',function(req, res, next){
     next();
       
 });
-
-
 
 //Mongo
 mongoose.connect("mongodb://127.0.0.1:27017/" + config.bd).then((respuesta)=>{
@@ -89,9 +91,6 @@ app.use(session({
     name: "CookieApp",//CokieApp // nombre del archivo que se descarga desde el backend hasta el frontend
     rolling:true
 }))
-
-
-
 
 //App.js linked to rutas.js
 require ('./rutas.js')

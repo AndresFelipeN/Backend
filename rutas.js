@@ -4,7 +4,7 @@
 var usuariosController = require('./api/controladores/usuariosController.js').usuariosController
 
 
-
+//                        middleware
 var soloadmin = function (request, response, next){
   if (request.session.rol == "1"){
     next ()
@@ -91,6 +91,17 @@ app.post('/logout', function(request,response){
     
 })
 
+app.get('/usuarios/exportarexel', function(request,response){
+  //acontinucacion vamos a usar la funcion
+  usuariosController.exportarexel(request, response)
+    
+})
+
+app.get('/usuarios/exportarpdf', function (request,response){
+  usuariosController.exportarpdf(request, response)
+
+})
+
 
 
 
@@ -119,6 +130,11 @@ app.post('/productos/listarproductosactivos', function(request,response){
   productosController.listarproductosactivos(request, response)
 })
 
+app.post('/productos/listarproductostipo', function(request,response){
+  
+  productosController.listarproductostipo(request, response)
+})
+
 app.post('/productos/listarId', function(request,response){
   
   productosController.listarId(request, response)
@@ -138,7 +154,7 @@ app.post('/productos/eliminar', function(request,response){
 
 
 
-//                                  Archivos               
+//                                 ARCHIVOS           
 
 var archivosController = require('./api/controladores/archivosController.js').archivosController
 
@@ -155,6 +171,48 @@ app.post('/subiravatar/:nombre', function(request,response){
   archivosController.subiravatar(request, response)
     
 })
+
+
+//                                   CARRITO
+
+var carritoController = require('./api/controladores/carritoController.js').carritoController
+
+//               Guardar carrito
+app.post('/carrito/guardar', function(request,response){
+  //acontinucacion vamos a usar la funcion
+  carritoController.guardar(request, response)
+    
+})
+
+
+//                     Listar carrito
+app.post('/carrito/listar', function(request,response){
+  //acontinucacion vamos a usar la funcion
+  carritoController.listar(request, response)
+})
+
+//                         Listar Id
+app.post('/carrito/listarId', function(request,response){
+  //acontinucacion vamos a usar la funcion
+  carritoController.listarId(request, response)
+})
+
+
+//                       Actualizar carrito
+app.post('/carrito/actualizar', function(request,response){
+  //acontinucacion vamos a usar la funcion
+  carritoController.actualizar(request, response)
+})
+                      
+
+
+//                             Eliminar
+app.post('/carrito/eliminar', function(request,response){
+  //acontinucacion vamos a usar la funcion
+  carritoController.eliminar(request, response)
+    
+})
+
 
 
 

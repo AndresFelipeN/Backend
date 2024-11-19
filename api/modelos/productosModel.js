@@ -12,7 +12,9 @@ var productosSchema = new Schema({
     descripcion:String,
     imagen:String,
     estado:String, //aca listamos por activo o inactivo
-    cantidad:Number
+    cantidad:Number,
+    tipo:String,
+    talla:String
 })
 
 const Mymodel = mongoose.model("productos" ,productosSchema)
@@ -30,12 +32,13 @@ productosModel.guardar = function(post, callback){
     instancia.codigo = post.codigo
     instancia.precio = parseInt (post.precio) //parse in convierte a entero
     instancia.descripcion = post.descripcion
+    instancia.tipo = post.tipo
+    instancia.talla = post.talla
     instancia.estado = post.estado
     instancia.cantidad = post.cantidad
    /*  Acontinuacion le estamos diciendo que si el formato imagen se guarda en blanco se le va otorgar una 
     imagen por defecto */
     if(post.imagen == undefined || post.imagen == null || post.imagen == ""){
-        console.log(imagen)
         instancia.imagen = "assets/noimagen.jpg" //aca asignamos una por defecto
     }
     else{
@@ -79,6 +82,21 @@ productosModel.listarproductosactivos = function(post, callback){
     //integracion de listar con mongo 
     // 1 es valor de activo 
     Mymodel.find({estado:"1"}, {}).then ((respuesta) => {
+ 
+     return callback({state:true, datos:respuesta})
+    })
+    .catch ((error) => {
+     return callback ({state:false, datos:[], error:error, mensaje:"se presento un error"})
+    })
+ 
+     //return callback({state:true, datos:bdproductos}) -> estamos trayendo los datos almacenados en el array
+}
+
+productosModel.listarproductostipo = function(post, callback){
+    //integracion de listar con mongo 
+    // 0 es valor de no asignado
+    console.log("hola",post.tipo)
+    Mymodel.find({tipo:post.body.tipo},{}).then ((respuesta) =>{
  
      return callback({state:true, datos:respuesta})
     })
@@ -136,6 +154,8 @@ productosModel.actualizar = function (post, callback){
             descripcion:post.descripcion,
             imagen:post.imagen,
             estado:post.estado,
+            tipo:post.tipo,
+            talla:post.talla,
             cantidad:post.cantidad
 
         }).then((respuesta) => {

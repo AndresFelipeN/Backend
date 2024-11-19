@@ -12,7 +12,9 @@ productosController.guardar = function(request, response)
         descripcion: request.body.descripcion,
         imagen: request.body.imagen,
         estado: request.body.estado,
-        cantidad: request.body.cantidad
+        cantidad: request.body.cantidad,
+        tipo:request.body.tipo,
+        talla:request.body.talla,
 
           
         
@@ -62,6 +64,20 @@ productosController.guardar = function(request, response)
         return false
     }
 
+    if(post.tipo == null || post.tipo == undefined || post.tipo == ""){
+        //Si las condiciones de arriba se cumplen el resultado es el de abajo
+        response.json ({state:false,mensaje:"el campo tipo es obligatorio"})
+        //frena el procesp
+        return false
+    }
+
+    if(post.talla == null || post.talla == undefined || post.talla == ""){
+        //Si las condiciones de arriba se cumplen el resultado es el de abajo
+        response.json ({state:false,mensaje:"el campo talla es obligatorio"})
+        //frena el procesp
+        return false
+    }
+
     
     //guardar en el modelo(modelos) se importa
     //los callback se capturan creando funciones
@@ -107,7 +123,13 @@ productosController.listarproductosactivos = function(request, response){
         response.json(respuesta)
     })
     
-    
+}
+
+productosController.listarproductostipo = function(request, response){
+   //console.log(request.body) 
+    productosModel.listarproductostipo(request, function(respuesta){
+        response.json(respuesta)
+    })
 }
 
 productosController.listarId = function(request, response){
@@ -137,7 +159,9 @@ productosController.actualizar = function (request, response){
         descripcion: request.body.descripcion,
         imagen: request.body.imagen,
         estado: request.body.estado,
-        cantidad: request.body.cantidad
+        cantidad: request.body.cantidad,
+        tipo: request.body.tipo,
+        talla: request.body.talla
     }
 
     if(post.nombre == null || post.nombre == undefined || post.nombre == ""){
@@ -180,6 +204,20 @@ productosController.actualizar = function (request, response){
     if(post.cantidad == null || post.cantidad == undefined || post.cantidad == ""){
         //Si las condiciones de arriba se cumplen el resultado es el de abajo
         response.json ({state:false,mensaje:"el campo cantidad es obligatorio"})
+        //frena el procesp
+        return false
+    }
+
+    if(post.tipo == null || post.tipo == undefined || post.tipo == ""){
+        //Si las condiciones de arriba se cumplen el resultado es el de abajo
+        response.json ({state:false,mensaje:"el campo tipo es obligatorio"})
+        //frena el procesp
+        return false
+    }
+
+    if(post.talla == null || post.talla == undefined || post.talla == ""){
+        //Si las condiciones de arriba se cumplen el resultado es el de abajo
+        response.json ({state:false,mensaje:"el campo talla es obligatorio"})
         //frena el procesp
         return false
     }

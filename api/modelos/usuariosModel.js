@@ -10,6 +10,8 @@ var usuariosSchema = new Schema({
     email:String,
     password:String,
     edad:Number,
+    telefono:Number,
+    direccion:String,
     errorlogin:Number,
     fechalogin:Date,
     azar:String,
@@ -30,6 +32,8 @@ usuariosModel.guardar = function(post, callback){
      const instancia = new Mymodel
      instancia.nombre = post.nombre
      instancia.email = post.email
+     instancia.telefono = post.telefono
+     instancia.direccion = post.direccion
      instancia.password = post.password
      instancia.edad = post.edad
      instancia.fechalogin = new Date()
@@ -101,7 +105,7 @@ usuariosModel.validalogin = function(post, callback){
     })
 }
 
-//   Actualir errores, tres errores para bloquear
+//   Actualizar errores, tres errores para bloquear
 usuariosModel.actualizarerrores = function(post, callback){
     Mymodel.findOneAndUpdate({email:post.email}, {
     errorlogin:post.cantidad, // esta cantidad viene del controlador validacion.errorloing
@@ -227,7 +231,9 @@ usuariosModel.actualizar = function (post, callback){
         {
             nombre:post.nombre,
             rol:post.rol,
-            estado:post.estado
+            estado:post.estado,
+            direccion:post.direccion,
+            telefono:post.telefono
         
 
         }) .then((respuesta) => {
