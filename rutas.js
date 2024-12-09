@@ -151,6 +151,19 @@ app.post('/productos/eliminar', function(request,response){
     
 })
 
+app.post('/productos/talla', function(request,response){
+  
+  productosController.talla(request, response)
+    
+})
+
+app.post('/productos/listarproductostallas', function(request,response){
+  
+  productosController.listarproductostallas(request, response)
+})
+
+
+
 
 
 

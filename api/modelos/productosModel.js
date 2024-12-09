@@ -12,9 +12,15 @@ var productosSchema = new Schema({
     descripcion:String,
     imagen:String,
     estado:String, //aca listamos por activo o inactivo
-    cantidad:Number,
+    //cantidad:Number,
     tipo:String,
-    talla:String
+    //talla:String,
+    color:String,
+    material:String,
+    tallas :[{
+        cantidad:Number,
+        talla:String,
+    }]
 })
 
 const Mymodel = mongoose.model("productos" ,productosSchema)
@@ -33,9 +39,11 @@ productosModel.guardar = function(post, callback){
     instancia.precio = parseInt (post.precio) //parse in convierte a entero
     instancia.descripcion = post.descripcion
     instancia.tipo = post.tipo
-    instancia.talla = post.talla
+    instancia.color = post.color
+    instancia.material = post.material
+    instancia.tallas = post.tallas
     instancia.estado = post.estado
-    instancia.cantidad = post.cantidad
+    //instancia.cantidad = post.cantidad
    /*  Acontinuacion le estamos diciendo que si el formato imagen se guarda en blanco se le va otorgar una 
     imagen por defecto */
     if(post.imagen == undefined || post.imagen == null || post.imagen == ""){
@@ -144,7 +152,6 @@ productosModel.existecodigo = function (post, callback){
 
 }
 
-
 productosModel.actualizar = function (post, callback){
 
     Mymodel.findByIdAndUpdate(post._id, // Mymodel.findOneAndUpdate({_id:post._id} es una opcion
@@ -155,8 +162,10 @@ productosModel.actualizar = function (post, callback){
             imagen:post.imagen,
             estado:post.estado,
             tipo:post.tipo,
-            talla:post.talla,
-            cantidad:post.cantidad
+            color:post.color,
+            material:post.material,
+            tallas:post.tallas,
+            
 
         }).then((respuesta) => {
             return callback ({state:true, mensaje:"Elemento actualizado"})
@@ -185,4 +194,19 @@ productosModel.eliminar = function (post, callback){
         
 }
 
+productosModel.listarproductostallas = function(post, callback){
+    //integracion de listar con mongo 
+    // 0 es valor de no asignado
+    Mymodel.find({tallas:post.body.tallas},{_id:post._id}).then ((respuesta) =>{
+ 
+     return callback({state:true, datos:respuesta})
+    })
+    .catch ((error) => {
+     return callback ({state:false, datos:[], error:error, mensaje:"se presento un error"})
+    })
+ 
+     //return callback({state:true, datos:bdproductos}) -> estamos trayendo los datos almacenados en el array
+}
+
+//module.exports.Mymodel = Mymodel
 module.exports.productosModel = productosModel

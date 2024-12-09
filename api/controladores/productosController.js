@@ -1,3 +1,5 @@
+//const Mymodel = require('../modelos/productosModel.js')
+
 var productosModel = require ('../modelos/productosModel.js').productosModel
 
 var productosController = {}
@@ -12,9 +14,11 @@ productosController.guardar = function(request, response)
         descripcion: request.body.descripcion,
         imagen: request.body.imagen,
         estado: request.body.estado,
-        cantidad: request.body.cantidad,
+       /*  cantidad: request.body.cantidad, */
         tipo:request.body.tipo,
-        talla:request.body.talla,
+        tallas: request.body.tallas,
+        material: request.body.material,
+        color: request.body.color,
 
           
         
@@ -57,12 +61,6 @@ productosController.guardar = function(request, response)
         return false
     }
 
-    if(post.cantidad == null || post.cantidad == undefined || post.cantidad == ""){
-        //Si las condiciones de arriba se cumplen el resultado es el de abajo
-        response.json ({state:false,mensaje:"el campo cantidad es obligatorio"})
-        //frena el procesp
-        return false
-    }
 
     if(post.tipo == null || post.tipo == undefined || post.tipo == ""){
         //Si las condiciones de arriba se cumplen el resultado es el de abajo
@@ -71,13 +69,34 @@ productosController.guardar = function(request, response)
         return false
     }
 
-    if(post.talla == null || post.talla == undefined || post.talla == ""){
+
+    if(post.color == null || post.color == undefined || post.color == ""){
         //Si las condiciones de arriba se cumplen el resultado es el de abajo
-        response.json ({state:false,mensaje:"el campo talla es obligatorio"})
+        response.json ({state:false,mensaje:"el campo color es obligatorio"})
         //frena el procesp
         return false
     }
 
+
+
+    if(post.material == null || post.material == undefined || post.material == ""){
+        //Si las condiciones de arriba se cumplen el resultado es el de abajo
+        response.json ({state:false,mensaje:"el campo material es obligatorio"})
+        //frena el procesp
+        return false
+    }
+
+    if (!Array.isArray(post.tallas) || post.tallas.length === 0) {  
+        return response.json({ state: false, mensaje: "debe proporcionar al menos una talla con cantidad" });  
+    }  
+
+    // Validar que cada talla tenga la propiedad 'talla' y 'cantidad'  
+    for (let i = 0; i < post.tallas.length; i++) {  
+        if (!post.tallas[i].talla || post.tallas[i].cantidad == null) {  
+            return response.json({ state: false, mensaje: `debe proporcionar valores válidos para talla en el índice ${i}` });  
+        }  
+    }  
+    
     
     //guardar en el modelo(modelos) se importa
     //los callback se capturan creando funciones
@@ -97,16 +116,7 @@ productosController.guardar = function(request, response)
     })
 
 
-    
-    
-    
-
-
-   
-
-
 }
-
 
 productosController.listar = function(request, response){
     
@@ -159,9 +169,11 @@ productosController.actualizar = function (request, response){
         descripcion: request.body.descripcion,
         imagen: request.body.imagen,
         estado: request.body.estado,
-        cantidad: request.body.cantidad,
+        /* cantidad: request.body.cantidad, */
         tipo: request.body.tipo,
-        talla: request.body.talla
+        tallas: request.body.tallas,
+        material: request.body.material,
+        color: request.body.color,
     }
 
     if(post.nombre == null || post.nombre == undefined || post.nombre == ""){
@@ -201,13 +213,6 @@ productosController.actualizar = function (request, response){
         return false
     }
 
-    if(post.cantidad == null || post.cantidad == undefined || post.cantidad == ""){
-        //Si las condiciones de arriba se cumplen el resultado es el de abajo
-        response.json ({state:false,mensaje:"el campo cantidad es obligatorio"})
-        //frena el procesp
-        return false
-    }
-
     if(post.tipo == null || post.tipo == undefined || post.tipo == ""){
         //Si las condiciones de arriba se cumplen el resultado es el de abajo
         response.json ({state:false,mensaje:"el campo tipo es obligatorio"})
@@ -215,9 +220,27 @@ productosController.actualizar = function (request, response){
         return false
     }
 
-    if(post.talla == null || post.talla == undefined || post.talla == ""){
+    if (!Array.isArray(post.tallas) || post.tallas.length === 0) {  
+        return response.json({ state: false, mensaje: "debe proporcionar al menos una talla con cantidad" });  
+    }  
+
+    // Validar que cada talla tenga la propiedad 'talla' y 'cantidad'  
+    for (let i = 0; i < post.tallas.length; i++) {  
+        if (!post.tallas[i].talla || post.tallas[i].cantidad == null) {  
+            return response.json({ state: false, mensaje: `debe proporcionar valores válidos para talla en el índice ${i}` });  
+        }  
+    }  
+
+    if(post.color == null || post.color == undefined || post.color == ""){
         //Si las condiciones de arriba se cumplen el resultado es el de abajo
-        response.json ({state:false,mensaje:"el campo talla es obligatorio"})
+        response.json ({state:false,mensaje:"el campo color es obligatorio"})
+        //frena el procesp
+        return false
+    }
+
+    if(post.material == null || post.material == undefined || post.material == ""){
+        //Si las condiciones de arriba se cumplen el resultado es el de abajo
+        response.json ({state:false,mensaje:"el campo material es obligatorio"})
         //frena el procesp
         return false
     }
@@ -228,7 +251,6 @@ productosController.actualizar = function (request, response){
 
     
 }
-
 
 productosController.eliminar = function (request, response){
 
@@ -253,6 +275,47 @@ productosController.eliminar = function (request, response){
 
     
 }
+
+/* productosController.talla = async function  (request, response){
+
+    const producto = request.query.tipo
+    console.log(typeof producto)
+    
+    try {
+        const tipoproducto = await Mymodel.aggregate([
+            { $match: { tipo: producto } },
+            { $group: { _id: "$talla", total: { $sum: "$cantidad" } } }, 
+            { $sort: { _id: 1 } }
+        ])
+        response.json(tipoproducto)
+    } catch (error) {
+        console.log(error)
+        response.status(500).json ('Hubo un error')
+        
+    }
+
+    
+} */
+
+productosController.listarproductostallas = function(request, response){
+    var post = {
+        
+        tallas:request.body.tallas
+    }
+
+    if (!Array.isArray(post.tallas) || post.tallas.length === 0) {  
+        return response.json({ state: false, mensaje: "debe proporcionar al menos una talla con cantidad" });  
+    }  
+
+    // Validar que cada talla tenga la propiedad 'talla' y 'cantidad'  
+    for (let i = 0; i < post.tallas.length; i++) {  
+        if (!post.tallas[i].talla || post.tallas[i].cantidad == null) {  
+            return response.json({ state: false, mensaje: `debe proporcionar valores válidos para talla en el índice ${i}` });  
+        }  
+    }  
+    
+} 
+
 
 //este objeto esta asignado a una variable por ende va tener todas las funciones que se asignen en la variable
 module.exports.productosController = productosController
